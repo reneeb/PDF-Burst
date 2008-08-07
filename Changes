@@ -1,0 +1,17 @@
+2008-08-07 09:44  cvs
+
+	* lib/PDF/Burst.pm, t/00_burst.t, t/00bust.pl, t/02_burst_scan1.t,
+	  t/pdfapi2-burst.pl: I am adding both CAM::PDF and PDF::API2
+	  methods of bursting a pdf.  pdf_burst is pointing to the CAM::PDF
+	  method by default.
+
+2008-08-05 14:23  cvs
+
+	* MANIFEST, Makefile.PL, t/00_burst.t, t/00bust.pl,
+	  t/trees14pgs.pdf, lib/PDF/Burst.pm, t/scan1.pdf: Initial revision
+
+2008-08-05 14:23  cvs
+
+	* MANIFEST, Makefile.PL, t/00_burst.t, t/00bust.pl,
+	  t/trees14pgs.pdf, lib/PDF/Burst.pm, t/scan1.pdf: init import
+
