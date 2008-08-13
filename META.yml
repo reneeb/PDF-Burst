@@ -1,20 +1,21 @@
 --- #YAML:1.0
 name:                PDF-Burst
-version:             1.04
+version:             1.05
 abstract:            ~
 license:             ~
 author:              ~
 generated_by:        ExtUtils::MakeMaker version 6.44
 distribution_type:   module
 requires:     
-    CAM::PDF:                      1
-    Carp:                          1
-    Cwd:                           3
-    Exporter:                      5
-    File::Copy:                    2
-    LEOCHARRE::DEBUG:              1
-    PDF::API2:                     2
-    Test::Simple:                  0
+    CAM::PDF:                      1.20
+    Carp:                          1.04
+    Cwd:                           3.12
+    Exporter:                      5.58
+    File::Copy:                    2.09
+    LEOCHARRE::CLI:                1.18
+    LEOCHARRE::DEBUG:              1.11
+    PDF::API2:                     2.015
+    Test::Simple:                  0.74
 meta-spec:
     url:     http://module-build.sourceforge.net/META-spec-v1.3.html
     version: 1.3

@@ -3,7 +3,7 @@ use strict;
 use vars qw($VERSION @ISA @EXPORT_OK %EXPORT_TAGS);
 @ISA = qw/Exporter/;
 @EXPORT_OK = qw/pdf_burst pdf_burst_CAM_PDF pdf_burst_PDF_API2/;
-$VERSION = sprintf "%d.%02d", q$Revision: 1.4 $ =~ /(\d+)/g;
+$VERSION = sprintf "%d.%02d", q$Revision: 1.5 $ =~ /(\d+)/g;
 %EXPORT_TAGS  = ( all => \@EXPORT_OK );
 use Exporter;
 use Carp;
@@ -179,7 +179,8 @@ I just need to burst a pdf into many, so here is the module.
 =head2 pdftk
 
 I was using the excellent pdftk, but the present version will not 
-compile with the new gcc compiler. I get a missing libgcj so.7rh error.
+compile with the new gcc compiler. I get a missing libgcj.so.7rh error. 
+Can only install libgcj.so.8rh on fc8 so far.
 
 =head2 PDF::API2 vs. CAM::PDF
 
