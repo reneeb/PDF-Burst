@@ -2,8 +2,8 @@ package PDF::Burst;
 use strict;
 use vars qw($VERSION @ISA @EXPORT_OK %EXPORT_TAGS);
 @ISA = qw/Exporter/;
-@EXPORT_OK = qw/pdf_burst pdf_burst_CAM_PDF pdf_burst_PDF_API2/;
-$VERSION = sprintf "%d.%02d", q$Revision: 1.5 $ =~ /(\d+)/g;
+@EXPORT_OK = qw/pdf_burst pdf_burst_CAM_PDF pdf_burst_PDF_API2 pdf_burst_pdftk/;
+$VERSION = sprintf "%d.%02d", q$Revision: 1.10 $ =~ /(\d+)/g;
 %EXPORT_TAGS  = ( all => \@EXPORT_OK );
 use Exporter;
 use Carp;
@@ -151,7 +151,30 @@ sub pdf_burst_PDF_API2 {
    return @abs_pages;
 }
 
+sub pdf_burst_pdftk {
+   my ($abs,$abs_loc,$filename,$filename_only, $ext, $groupname) = _args(@_);
+   
+   my @abs_pages;
+   
+   require File::Which;
+   my $bin = File::Which::which('pdftk')
+      or warn("Can't find which pdftk.")
+      and return;
 
+   my @args = ( $bin, $abs, 'burst', 'output', "$abs_loc/$groupname\_page_%04d.pdf");
+   system(@args) == 0 or 
+      warn("fails: '@args'")
+      and return;
+
+   opendir(DIR, $abs_loc) or warn("can't open $abs_loc, $!") and return;
+   @abs_pages = map { "$abs_loc/$_" } 
+      sort grep { m/$groupname\_page\_\d+\.pdf$/i } readdir DIR;
+   closedir DIR;
+   
+   debug($_) for @abs_pages;
+
+   return @abs_pages;
+}
 
 
 
@@ -237,10 +260,17 @@ Returns array list of abs paths to the files created.
 
 Same as pdf_burst.
 Used by default.
+Requires CAM::PDF.
 
 =head2 pdf_burst_PDF_API2()
 
 Same as pdf_burst.
+Obviously requires PDF::API2.
+
+=head2 pdf_burst_pdftk()
+
+Same as pdf_burst.
+Requires that pdftk be installed.
 
 =head1 DEBUG
 

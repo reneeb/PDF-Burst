@@ -1,3 +1,11 @@
+2008-08-14 11:44  cvs
+
+	* t/03_burst_ext.t: A
+
+2008-08-14 11:44  cvs
+
+	* lib/PDF/Burst.pm, t/99_cleanup.pl: Added cli burst
+
 2008-08-13 09:37  cvs
 
 	* bin/pdfburst: Added cli script pdfburst
