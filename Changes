@@ -1,3 +1,12 @@
+2008-12-16 11:07  cvs
+
+	* lib/PDF/Burst.pm, t/01_burst14.t: Made it so there's a nice
+	  $PDF::Burst::errstr that holds errors instead of dying, so any
+	  fails may be treated as pdf_burst('./file.pdf') or
+	  die($PDF::Burst::errstr); added a 'fail' test for this.  Also
+	  cleaned up the doc synopsis a bit and added more see also
+	  references.
+
 2008-08-14 11:44  cvs
 
 	* t/03_burst_ext.t: A
