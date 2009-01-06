@@ -1,0 +1,3 @@
+InfoKey: Producer
+InfoValue: PDF::API2 0.71.001 [linux]
+NumberOfPages: 1

@@ -1,8 +1,8 @@
 Changes
 MANIFEST
-Makefile
 Makefile.PL
 bin/pdfburst
+doc_data.txt
 lib/PDF/Burst.pm
 t/00_find_which_burst_works.t
 t/01_burst14.t

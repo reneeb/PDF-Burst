@@ -1,9 +1,9 @@
 package PDF::Burst;
 use strict;
-use vars qw($VERSION @ISA @EXPORT_OK %EXPORT_TAGS $errstr);
+use vars qw($VERSION @ISA @EXPORT_OK %EXPORT_TAGS $errstr $BURST_METHOD);
 @ISA = qw/Exporter/;
 @EXPORT_OK = qw/pdf_burst pdf_burst_CAM_PDF pdf_burst_PDF_API2 pdf_burst_pdftk/;
-$VERSION = sprintf "%d.%02d", q$Revision: 1.11 $ =~ /(\d+)/g;
+$VERSION = sprintf "%d.%02d", q$Revision: 1.12 $ =~ /(\d+)/g;
 %EXPORT_TAGS  = ( all => \@EXPORT_OK );
 use Exporter;
 use Carp;
@@ -11,8 +11,15 @@ use LEOCHARRE::DEBUG;
 sub errstr;
 sub errstr { $errstr =$_[0]; 1 }
 
-  *pdf_burst = \&pdf_burst_CAM_PDF;
+  #*pdf_burst = \&pdf_burst_CAM_PDF;
 # *pdf_burst = \&pdf_burst_PDF_API2;
+
+sub pdf_burst {
+   $BURST_METHOD ||= 'CAM_PDF';
+   no strict 'refs';
+   &{"pdf_burst_$BURST_METHOD"}(@_);
+}
+
 
 sub _args {
    my ($_path, $groupname, $_abs_loc)= @_;
@@ -88,12 +95,16 @@ sub pdf_burst_CAM_PDF {
       ### $index
 
       my $abs_page = "$abs_loc/$groupname\_page_$index_human$ext";
-      debug($abs_page);
+      debug("abs page will be: '$abs_page'.. ");
 
 
 
-      my $pdf = CAM::PDF->new($abs);
-      $pdf->extractPages($index + 1); # discard all put page x
+      my $pdf = CAM::PDF->new($abs) or confess("Could not CAM::PDF:: new '$abs'");
+      debug("instanced CAM::PDF, will call extractPages() .. ");
+
+      $pdf->extractPages($index + 1); # discard all but page x
+
+      debug("calling cleansave().. ");
       $pdf->cleansave; # rebuild pdf data
       $pdf->output($abs_page);
 
@@ -223,9 +234,23 @@ PDF::Burst - create one pdf doc for each page in existing pdf document
    my @abs_pdf_pagefiles = pdf_burst_CAM_PDF($abs_pdf);
    my @abs_pdf_pagefiles = pdf_burst_PDF_API2($abs_pdf);
    my @abs_pdf_pagefiles = pdf_burst_pdftk($abs_pdf);
+
+   
+   # uses CAM_PDF by default:
    my @abs_pdf_pagefiles = pdf_burst($abs_pdf);
-   
-   
+
+   # change default to PDF_API2:
+   $PDF::Burst::BURST_METHOD = 'PDF_API2';
+   my @abs_pdf_pagefiles = pdf_burst($abs_pdf);
+
+   # change default to pdftk:
+   $PDF::Burst::BURST_METHOD = 'pdftk';
+   my @abs_pdf_pagefiles = pdf_burst($abs_pdf);
+
+   # change default to CAM_PDF
+   $PDF::Burst::BURST_METHOD = 'CAM_PDF';
+   my @abs_pdf_pagefiles = pdf_burst($abs_pdf);
+
    my @new_filenames = pdf_burst($abs_pdf) or die($PDF::Burst::errstr);
    # we get 
    #     /home/myself/file_page_0001.pdf, 
@@ -247,6 +272,7 @@ PDF::Burst - create one pdf doc for each page in existing pdf document
    #     /home/stuff/hi_page_0001.pdf, 
    #     /home/stuff/hi_page_0002.pdf, 
    #     ..
+
 
 
 =head1 DESCRIPTION
@@ -300,6 +326,17 @@ Obviously requires PDF::API2.
 Same as pdf_burst.
 Requires that pdftk be installed.
 
+=head1 CHANGING BURST METHOD
+
+The api is designed so you call pdf_burst(), period.
+Various methods may fail on your system. 
+If your code calls pdf_burst(), and you want to change overall what the method is.. 
+Instead of writing pdf_burst_ANOTHERMETHOD() you can instead set..
+
+   $PDF::Burst::BURST_METHOD = $method;
+
+Where $method is one of : pdftk, PDF_API2, CAM_PDF
+
 =head1 DEBUG
 
 To turn on debug..
@@ -320,6 +357,8 @@ pdftk is wonderful. If it doesn't work, use this.
 PDF::API2 2.015 will not properly split up docs on some architectures.
 Note that this module is not for working with the innards of pdfs, it's to quickly split up
 a pdf into pages, each its own document on disk.
+
+If you have other methods to burst a pdf, please suggest/submit to AUTHOR.
 
 =head1 AUTHOR
 
