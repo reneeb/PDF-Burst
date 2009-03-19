@@ -1,3 +1,17 @@
+2009-03-19 12:37  cvs
+
+	* lib/PDF/Burst.pm, lib/PDF/Burst.pod, t/01_burst14.t: moved doc to
+	  separate .pod file.  added more documentation added better
+	  reporting on test failure
+
+2009-01-06 11:43  cvs
+
+	* lib/PDF/Burst.pm: Added a simple way to change the method that
+	  pdf_burst uses.  Before I used a hard coded alias from
+	  *PDF::Burst::pdf_burst to PDF::Burst::pdf_burst_CAM_PDF, Now we
+	  set the name in $PDF::Burst::BURST_METHOD , one of pdftk,
+	  PDF_API2, CAM_PDF.
+
 2008-12-16 11:07  cvs
 
 	* lib/PDF/Burst.pm, t/01_burst14.t: Made it so there's a nice
