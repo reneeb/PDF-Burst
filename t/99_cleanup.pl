@@ -8,6 +8,8 @@ closedir D;
 system('rm ./t/alt/*pdf');
 system('rmdir ./t/alt');
 system('rm t/problemfile_dev/*page*');
+system('rm t/problemfiles/*page_*.pdf');
+system('rm ./doc_data.txt');
 
 ok(1,"cleaned");
 

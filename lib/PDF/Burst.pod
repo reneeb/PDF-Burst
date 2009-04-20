@@ -71,7 +71,11 @@ You can call pdf_burst_CAM_PDF(), pdf_burst_PDF_API2(), pdf_burst_pdftk(), or pd
 Calling pdf_burst() will use the default method. 
 The default method is CAM_PDF.
 
+=head2 IF PDF::Burst FAILS
+
+Try another burst method.
 See L<CHANGING BURST METHOD>
+
 
 =head2 pdftk
 
@@ -154,13 +158,13 @@ was never meant to. No support is planned for non POSIX operating environments.
 
 =head1 SEE ALSO
 
-L<PDF::API2>
+L<PDF::API2> - excellent pdf api.
 
-L<CAM::PDF>
+L<CAM::PDF> - works when sometimes PDF::API2 will not.
 
 pdftk - http://www.pdfhacks.com/pdftk/
 
-L<PDF::Extract>
+L<PDF::Extract>.
 
 =head1 AUTHOR
 

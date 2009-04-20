@@ -1,3 +1,7 @@
+2009-04-20 10:27  cvs
+
+	* lib/PDF/Burst.pm: added some test docs, problematic files.
+
 2009-03-19 12:37  cvs
 
 	* lib/PDF/Burst.pm, lib/PDF/Burst.pod, t/01_burst14.t: moved doc to
