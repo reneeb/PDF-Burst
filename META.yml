@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               PDF-Burst
-version:            1.15
+version:            1.16
 abstract:           ~
 author:  []
 license:            perl
@@ -8,15 +8,15 @@ distribution_type:  module
 configure_requires:
     ExtUtils::MakeMaker:  0
 requires:
-    CAM::PDF:          1.21
+    CAM::PDF:          1.52
     Carp:              1
     Cwd:               3
     Exporter:          5
     File::Copy:        2.09
     File::Which:       0.05
-    LEOCHARRE::CLI:    1.18
-    LEOCHARRE::DEBUG:  1.12
-    LEOCHARRE::Dir:    1.06
+    LEOCHARRE::CLI:    1.19
+    LEOCHARRE::DEBUG:  1.13
+    LEOCHARRE::Dir:    1.07
     PDF::API2:         2.015
     Test::Simple:      0
 no_index:

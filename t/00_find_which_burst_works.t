@@ -1,16 +1,19 @@
+#!/usr/bin/perl -w
 use Test::Simple 'no_plan';
 use strict;
 use lib './lib';
 use PDF::Burst ':all';
+use warnings;
 
 $PDF::Burst::DEBUG = 1;
+sub spacer { printf STDERR "\n%s\n\n", '-'x60 }
 
 
 
 my $works =0;
 
+spacer();
 
-print STDERR "\n\n\n";
 if ( eval { ok_CAM_PDF() } ){
 
    ok( 1, "CAM::PDF burst works" );   
@@ -20,9 +23,7 @@ else {
    print STDERR "CAM::PDF burst does not work\n";
 }
 
-
-print STDERR "\n\n\n";
-
+spacer();
 if ( eval { ok_PDF_API2() } ){
    
    ok( 1, "PDF::API2 burst works" );
@@ -32,9 +33,7 @@ else {
    print STDERR "PDF::API2 burst does not work\n";
 }
 
-
-print STDERR "\n\n\n";
-
+spacer();
 if ( eval { ok_pdftk() } ){
 
    ok( 1, "pdftk burst works" );   
@@ -45,7 +44,7 @@ else {
 }
 
 
-print STDERR "\n\n\n";
+spacer();
 ok( $works, "found $works working method(s) to pdf burst");
 
 

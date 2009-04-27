@@ -1,6 +1,7 @@
 use Test::Simple 'no_plan';
 use strict;
 use lib './lib';
+use warnings;
 use PDF::Burst 'pdf_burst';
 
 $PDF::Burst::DEBUG = 1;

@@ -3,7 +3,7 @@ use strict;
 use vars qw($VERSION @ISA @EXPORT_OK %EXPORT_TAGS $errstr $BURST_METHOD @BURST_METHODS %BURST_METHOD $DEBUG);
 @ISA = qw/Exporter/;
 @EXPORT_OK = qw/pdf_burst pdf_burst_CAM_PDF pdf_burst_PDF_API2 pdf_burst_pdftk/;
-$VERSION = sprintf "%d.%02d", q$Revision: 1.15 $ =~ /(\d+)/g;
+$VERSION = sprintf "%d.%02d", q$Revision: 1.16 $ =~ /(\d+)/g;
 %EXPORT_TAGS  = ( all => \@EXPORT_OK );
 use Exporter;
 use Carp;
@@ -165,9 +165,10 @@ sub pdf_burst_PDF_API2 {
       my $abs_page = "$abs_loc/$groupname\_page_0001$ext";
       require File::Copy;
       unlink $abs_page;
-      File::Copy::cp($abs, $abs_page)
-         or $errstr ="PDF_API2: cant copy $abs to $abs_page, $!"
-         and return;
+      unless( File::Copy::cp($abs, $abs_page) ){
+         $errstr ="PDF_API2: cant copy $abs to $abs_page, $!";
+         return;
+      }
       return ($abs_page);
    }
    elsif( $pagecount == 0 ){
@@ -179,12 +180,18 @@ sub pdf_burst_PDF_API2 {
       my $pdf_out = sprintf "$abs_loc/$groupname\_page_%04d$ext", $i;
       debug("PDF_API2: $pdf_out");
 
-      my $pdf = PDF::API2->new 
-         or ( $errstr="PDF_API2: cant instance PDF::API" )
-         and return;
-      $pdf->importpage( $pdf_src, $i ) 
-         or $errstr="PDF_API2: cannot import page, pdf error?"
-         and return;
+      my $pdf;
+      
+      unless ( $pdf = PDF::API2->new ){
+         $errstr="PDF_API2: cant instance PDF::API";
+         return;
+      }
+
+      unless( $pdf->importpage( $pdf_src, $i )){
+         $errstr="PDF_API2: cannot import page, pdf error?";
+         return;
+      }
+      
       $pdf->saveas( $pdf_out );
       push @abs_pages, $pdf_out;
 
@@ -196,6 +203,8 @@ sub pdf_burst_pdftk {
    my ($abs,$abs_loc,$filename,$filename_only, $ext, $groupname) = _args(@_)
       or return;
    
+   no warnings;
+
    my @abs_pages;
    
    require File::Which;
