@@ -3,11 +3,11 @@ use strict;
 use vars qw($VERSION @ISA @EXPORT_OK %EXPORT_TAGS $errstr $BURST_METHOD @BURST_METHODS %BURST_METHOD $DEBUG);
 @ISA = qw/Exporter/;
 @EXPORT_OK = qw/pdf_burst pdf_burst_CAM_PDF pdf_burst_PDF_API2 pdf_burst_pdftk/;
-$VERSION = sprintf "%d.%02d", q$Revision: 1.16 $ =~ /(\d+)/g;
+$VERSION = sprintf "%d.%02d", q$Revision: 1.17 $ =~ /(\d+)/g;
 %EXPORT_TAGS  = ( all => \@EXPORT_OK );
 use Exporter;
+use File::Which;
 use Carp;
-#use LEOCHARRE::DEBUG;
 sub errstr;
 sub errstr { $errstr =$_[0]; 1 }
 
@@ -207,7 +207,6 @@ sub pdf_burst_pdftk {
 
    my @abs_pages;
    
-   require File::Which;
    my $bin = File::Which::which('pdftk')
       or $errstr="pdftk: Can't find which pdftk."
       and return;

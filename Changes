@@ -1,3 +1,8 @@
+2009-05-15 09:47  cvs
+
+	* lib/PDF/Burst.pm: Changed from 'require File::Which' to 'use
+	  File::Which', request/suggestion from  Andreas Hernitscheck.
+
 2009-04-27 15:32  cvs
 
 	* lib/PDF/Burst.pm, t/00_find_which_burst_works.t, t/01_burst14.t:
