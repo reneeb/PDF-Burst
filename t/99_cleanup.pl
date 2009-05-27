@@ -10,6 +10,7 @@ system('rmdir ./t/alt');
 system('rm t/problemfile_dev/*page*');
 system('rm t/problemfiles/*page_*.pdf');
 system('rm ./doc_data.txt');
+system('rm ./t/doc_data.txt');
 
 ok(1,"cleaned");
 

@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               PDF-Burst
-version:            1.17
+version:            1.19
 abstract:           ~
 author:  []
 license:            perl

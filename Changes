@@ -1,3 +1,20 @@
+2009-05-27 14:20  cvs
+
+	* lib/PDF/Burst.pm, lib/PDF/Burst.pod, t/10_problemfile.dev.t,
+	  t/multiple_page_problem.t: Using pdftk burst method, if you burst
+	  2 different files in the same directory, and they have diff page
+	  counts, (if the first has 5 pages, and the second 2), we return
+	  the most page docs matched A hack has been requested/placed to
+	  help ameliorate this.  What it does is, pdftk places a
+	  doc_data.txt file in the current working directory that holds how
+	  many pages there were in the document, we try to find that file
+	  (doc_data.txt) and read it for count of pages, and then compare
+	  to what we got.
+
+	  This is a hack solution. The real solution is not to burst two
+	  files with the same filename in the same directory.  Or to clean
+	  up afterwards.
+
 2009-05-15 09:47  cvs
 
 	* lib/PDF/Burst.pm: Changed from 'require File::Which' to 'use

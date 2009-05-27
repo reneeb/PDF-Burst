@@ -3,14 +3,13 @@ use strict;
 use vars qw($VERSION @ISA @EXPORT_OK %EXPORT_TAGS $errstr $BURST_METHOD @BURST_METHODS %BURST_METHOD $DEBUG);
 @ISA = qw/Exporter/;
 @EXPORT_OK = qw/pdf_burst pdf_burst_CAM_PDF pdf_burst_PDF_API2 pdf_burst_pdftk/;
-$VERSION = sprintf "%d.%02d", q$Revision: 1.17 $ =~ /(\d+)/g;
+$VERSION = sprintf "%d.%02d", q$Revision: 1.19 $ =~ /(\d+)/g;
 %EXPORT_TAGS  = ( all => \@EXPORT_OK );
 use Exporter;
 use File::Which;
 use Carp;
 sub errstr;
 sub errstr { $errstr =$_[0]; 1 }
-
 sub debug { $DEBUG and warn(" # ".__PACKAGE__.", @_\n"); 1 }
 
 %BURST_METHOD = (
@@ -137,9 +136,13 @@ sub _path_segments {
    require Cwd;
    my $abs = Cwd::abs_path($_abs) 
       or $errstr="$_abs not on disk? cant resolve with Cwd::abs_path"
+      and warn("$_abs not on disk")
       and return;
    
-   -f $abs or $errstr="Path $abs not on disk." and return;
+   -f $abs 
+      or $errstr="Path $abs not on disk." 
+      and warn("path $abs not on disk")
+      and return;
 
    $abs=~/^(.+)\/+([^\/]+)(\.\w{1,5})$/i 
       or $errstr="cant match abs loc and filename into '$abs'"
@@ -211,21 +214,102 @@ sub pdf_burst_pdftk {
       or $errstr="pdftk: Can't find which pdftk."
       and return;
 
+   # HACK #
+   # have to be in cwd to be able to get doc_dat.txt later
+   # pdftk will spit out doc_dat.txt to the cwd, must be set with chdir
+   require Cwd;
+   my $cwd = Cwd::cwd(); # so we can come back later.
+   chdir $abs_loc;
+
    my @args = ( $bin, $abs, 'burst', 'output', "$abs_loc/$groupname\_page_%04d.pdf");
    system(@args) == 0 
       or $errstr="pdftk: fails: '@args'"
       and return;
+   
+
 
    opendir(DIR, $abs_loc) 
       or $errstr="pdftk: can't open $abs_loc, $!" 
       and return;
+
    @abs_pages = map { "$abs_loc/$_" } 
       sort grep { m/$groupname\_page\_\d+\.pdf$/i } readdir DIR;
    closedir DIR;
    
+   my $pgcount = scalar @abs_pages;
+
+   # HACK ########################################################
+   # if there is a ./doc_dat.txt file
+   # test it against what we have for page count
+   my $doc_dat = "$abs_loc/doc_data.txt";
+   if ( my $dat = _pdf_burst_doc_dat_href($doc_dat) ){     
+
+      if ( defined $dat->{NumberOfPages} ){
+         
+         if( $pgcount != $dat->{NumberOfPages} ){
+            warn("We burst $abs into $pgcount docs, but pdftk doc_dat.txt says we are supposed to have $dat->{NumberOfPages} pages!");
+         }
+
+         if ($pgcount < $dat->{NumberOfPages}){
+            warn("docs count is less than the number of pages pdftk says we should have.");
+
+         }
+         elsif( $pgcount > $dat->{NumberOfPages} ){
+            warn("docs count is higher than the number of pages pdftk says we should have. Will shorten list.");
+            @abs_pages = @abs_pages[0 .. ( $dat->{NumberOfPages} - 1 )];
+         }
+         else {
+            debug("Checked with pdftk doc_dat.txt, correct number of pages.");
+         }
+      }
+      else {
+         warn("did not have 'NumberOfPages' in $doc_dat, different version of pdftk? Notify PDF::Burst AUTHOR");
+      }
+   }
+   else {
+      debug("got no doc_data.txt");
+   }
+
+
+   # HACK
+   # go back to what it was
+   chdir $cwd;
+
+
    debug($_) for @abs_pages;
 
    return @abs_pages;
+}
+
+
+
+# return hash ref
+sub _pdf_burst_doc_dat_href {
+   # this is tricky, doc data will reside wherever the heck our cwd is
+
+
+   my $doc_dat = shift;
+   $doc_dat or croak("missing arg");
+   -f $doc_dat or return;
+
+   debug("had '$doc_dat' file on disk");
+   
+   my %dat;
+   
+   open(FILE,'<',$doc_dat) 
+      or warn("Cannot open '$doc_dat' for reading, $!")
+      and return;
+   while(my $line= <FILE>){
+      chomp $line;
+      $line=~/^(\w+)\W+(.+)$/ 
+         or warn("Cant make out line '$line' into key val pair")
+         and next;
+      $dat{$1}= $2;
+   }
+   close FILE;
+   
+   defined %dat or warn("had nothing in '$doc_dat'?") and return;
+   return \%dat;
 }
 
 

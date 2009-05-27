@@ -156,6 +156,10 @@ If you have other methods to burst a pdf, please suggest/submit to AUTHOR.
 This module is meant to work with POSIX environments, if you're on windows, that means it won't work- and it
 was never meant to. No support is planned for non POSIX operating environments.
 
+If you use method pdftk, I suggest always cleaning up after bursting, or using a temporary directory.
+
+
+
 =head1 SEE ALSO
 
 L<PDF::API2> - excellent pdf api.
