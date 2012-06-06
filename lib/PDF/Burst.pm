@@ -308,7 +308,7 @@ sub _pdf_burst_doc_dat_href {
    }
    close FILE;
    
-   defined %dat or warn("had nothing in '$doc_dat'?") and return;
+   %dat or warn("had nothing in '$doc_dat'?") and return;
    return \%dat;
 }
 
